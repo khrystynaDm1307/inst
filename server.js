@@ -17,7 +17,7 @@ app.get("/login", function (req, res) {
   );
 });
 
-app.post("/auth-callback", async function (req, res) {
+app.get("/auth-callback", async function (req, res) {
   console.log("/auth callback");
   const code = req.query.code;
   console.log({ code });
