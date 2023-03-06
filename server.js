@@ -84,8 +84,8 @@ app.get("/auth-callback", async function (req, res) {
     const response = await axios(config);
     console.log({ response });
 
-    req.access_token = response.data.access_token;
-    req.user_id = response.data.user_id;
+    localStorage.setItem("access_token", response.data.access_token);
+    localStorage.setItem("user_id", response.data.user_id);
 
     return res.send(JSON.stringify(response.data));
   } catch (e) {
@@ -98,7 +98,8 @@ app.get("/auth-callback", async function (req, res) {
 });
 
 app.get("/user", async function (req, res) {
-  const { access_token, user_id } = req;
+  const access_token = localStorage.getItem("access_token");
+  const user_id = localStorage.getItem("user_id");
 
   const response = await fetch(
     `https://graph.instagram.com/${user_id}?fields=id,username&access_token=${access_token}`
