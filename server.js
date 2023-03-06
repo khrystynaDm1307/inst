@@ -13,7 +13,6 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 app.get("/", function (req, res) {
   console.log("start point");
   res.sendFile(path.join(__dirname, "index.html"));
@@ -28,38 +27,39 @@ app.get("/login", function (req, res) {
 
 app.get("/auth-callback", async function (req, res) {
   console.log("/auth callback");
-  const code = req.query.code;
-  console.log({ code });
-  const response = await fetch(
-    `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}&client_secret=${APP_SECRET}&grant_type=authorization_code&redirect_uri=${BASE_URL}/auth/access-token&code=${code}`,
-    {
-      method: "POST",
-    }
-  );
-  console.log(response.json());
-  // response example
-  //   {
-  //     "access_token": "IGQVJ...",
-  //     "user_id": 17841405793187218
-  //   }
-  return res.send(response.json());
+
+  try {
+    const code = req.query.code;
+    console.log({ code });
+
+    const response = await fetch(
+      `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}&client_secret=${APP_SECRET}&grant_type=authorization_code&redirect_uri=${BASE_URL}/auth/access-token&code=${code}`,
+      {
+        method: "POST",
+      }
+    );
+
+    console.log({ response });
+
+    return res.send(response.json());
+  } catch (e) {
+    return res
+      .status(e.code || 500)
+      .json(e.message)
+      .end();
+  }
 });
 
-app.post("/auth/access-token", async function (req, res) {
-  console.log("/access token");
-  return res.status(200).end();
-});
 
-app.get("/user", async function (req, res) {
-  //   const access_token=req.headers
-  const userId = req.params.id;
+// app.get("/user", async function (req, res) {
+//   const userId = req.params.id;
 
-  const response = await fetch(
-    `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
-  );
+//   const response = await fetch(
+//     `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
+//   );
 
-  return res.send({ response });
-});
+//   return res.send({ response });
+// });
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
