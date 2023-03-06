@@ -26,6 +26,16 @@ const scope = [
   "user_birthday",
   "user_age_range",
   "user_link",
+  "user_location",
+  "user_likes",
+  "public_profile",
+  "pages_user_locale",
+  "pages_user_timezone",
+  "instagram_shopping_tag_products",
+  "user_videos",
+  "pages_manage_posts",
+  "pages_manage_engagement",
+  "user_posts",
 ];
 const app = express();
 
@@ -60,6 +70,7 @@ app.get("/auth-callback", async function (req, res) {
       redirect_uri: "https://insta-0u51.onrender.com/auth-callback",
       code,
     });
+
     const config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -67,20 +78,12 @@ app.get("/auth-callback", async function (req, res) {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: data,
+      data,
     };
 
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data));
-        return res.send(JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-        return res.send(error);
-      });
+    const response = await axios(config);
 
-    return res.send(200);
+    return res.send(JSON.stringify(response.data));
   } catch (e) {
     console.log({ e });
     return res
@@ -88,28 +91,6 @@ app.get("/auth-callback", async function (req, res) {
       .json(e.message)
       .end();
   }
-});
-
-app.get("/auth/access-token", async function (req, res) {
-  console.log("get access token");
-  // const userId = req.params.id;
-
-  // const response = await fetch(
-  //   `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
-  // );
-
-  return res.send({ status: 200 }).end();
-});
-
-app.post("/auth/access-token", async function (req, res) {
-  console.log("post access token");
-  // const userId = req.params.id;
-
-  // const response = await fetch(
-  //   `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
-  // );
-
-  return res.send({ status: 200 }).end();
 });
 
 app.get("/user", async function (req, res) {
