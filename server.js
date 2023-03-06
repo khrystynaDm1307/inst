@@ -1,5 +1,7 @@
 import express from "express";
 import fetch from "node-fetch";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const port = 4000;
 const APP_ID = "223946259993081";
@@ -8,9 +10,13 @@ const BASE_URL = "https://insta-0u51.onrender.com";
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 app.get("/", function (req, res) {
   console.log("start point");
-  res.sendFile("index.html", { root: __dirname });
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.get("/login", function (req, res) {
