@@ -8,6 +8,14 @@ const APP_ID = "223946259993081";
 const APP_SECRET = "be6659ef82a77b726e236f30c2facaec";
 const BASE_URL = "https://insta-0u51.onrender.com";
 
+const scope = [
+  "pages_read_engagement",
+  "instagram_basic",
+  "instagram_manage_insights",
+  "business_management",
+  "user_profile",
+  "user_media",
+];
 const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -21,7 +29,9 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   console.log("/login");
   return res.redirect(
-    `https://api.instagram.com/oauth/authorize?client_id=${APP_ID}&redirect_uri=${BASE_URL}/auth-callback&scope=user_profile,user_media&response_type=code`
+    `https://api.instagram.com/oauth/authorize?client_id=${APP_ID}&redirect_uri=${BASE_URL}/auth-callback&scope=${scope.join(
+      ","
+    )}&response_type=code`
   );
 });
 
@@ -40,15 +50,13 @@ app.get("/auth-callback", async function (req, res) {
           "Content-Type": "application/x-www-form-urlencoded",
         },
 
-        body: new URLSearchParams(
-          JSON.stringify({
-            client_id: APP_ID,
-            client_secret: APP_SECRET,
-            grant_type: "authorization_code",
-            redirect_uri: `${BASE_URL}/auth-callback`,
-            code,
-          })
-        ),
+        body: new URLSearchParams({
+          client_id: APP_ID,
+          client_secret: APP_SECRET,
+          grant_type: "authorization_code",
+          redirect_uri: `${BASE_URL}/auth-callback`,
+          code,
+        }),
       }
     );
 
