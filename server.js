@@ -1,4 +1,5 @@
 const express = require("express");
+const fetch = require("node-fetch");
 const app = express();
 const port = 4000;
 const APP_ID = "223946259993081";
@@ -27,13 +28,13 @@ app.get("/auth-callback", async function (req, res) {
       method: "POST",
     }
   );
-
+  console.log(response.json());
   // response example
   //   {
   //     "access_token": "IGQVJ...",
   //     "user_id": 17841405793187218
   //   }
-  return res.send({ response });
+  return res.send(response.json());
 });
 
 app.post("/auth/access-token", async function (req, res) {
