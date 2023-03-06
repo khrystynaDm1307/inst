@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 const port = 4000;
-const APP_ID = "880663813213909";
-const APP_SECRET = "5f28610fc885c6856863db5471b0cf55";
+const APP_ID = "223946259993081";
+const APP_SECRET = "be6659ef82a77b726e236f30c2facaec";
 const BASE_URL = "https://insta-0u51.onrender.com";
 
 app.get("/", function (req, res) {
@@ -13,7 +13,7 @@ app.get("/", function (req, res) {
 app.get("/login", function (req, res) {
   console.log("/login");
   return res.redirect(
-    `https://api.instagram.com/oauth/authorize?client_id=880663813213909&redirect_uri=https://insta-0u51.onrender.com/auth-callback&scope=user_profile,user_media&response_type=code`
+    `https://api.instagram.com/oauth/authorize?client_id=${APP_ID}&redirect_uri=${BASE_URL}/auth-callback&scope=user_profile,user_media&response_type=code`
   );
 });
 
@@ -22,11 +22,7 @@ app.get("/auth-callback", async function (req, res) {
   const code = req.query.code;
   console.log({ code });
   const response = await fetch(
-    `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}
-    &client_secret=${APP_SECRET}
-    &grant_type=authorization_code
-    &redirect_uri=https://insta-0u51.onrender.com/auth/access-token
-    &code=${code}`,
+    `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}&client_secret=${APP_SECRET}&grant_type=authorization_code&redirect_uri=${BASE_URL}/auth/access-token&code=${code}`,
     {
       method: "POST",
     }
