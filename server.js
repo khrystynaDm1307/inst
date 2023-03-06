@@ -12,17 +12,15 @@ app.get("/", function (req, res) {
 
 app.get("/login", function (req, res) {
   console.log("/login");
-  return res.redirect(`https://api.instagram.com/oauth/authorize
-  ?client_id=${APP_ID}
-  &redirect_uri=https://insta-0u51.onrender.com/auth-callback
-  &scope=user_profile,user_media
-  &response_type=code`);
+  return res.redirect(
+    `https://api.instagram.com/oauth/authorize?client_id=880663813213909&redirect_uri=https://insta-0u51.onrender.com/auth-callback&scope=user_profile,user_media&response_type=code`
+  );
 });
 
 app.post("/auth-callback", async function (req, res) {
   console.log("/auth callback");
   const code = req.query.code;
-
+  console.log({ code });
   const response = await fetch(
     `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}
     &client_secret=${APP_SECRET}
