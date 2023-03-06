@@ -2,6 +2,8 @@ import express from "express";
 import fetch from "node-fetch";
 import path from "path";
 import { fileURLToPath } from "url";
+import qs from "qs";
+import axios from "axios";
 
 const port = 4000;
 const APP_ID = "223946259993081";
@@ -42,27 +44,52 @@ app.get("/auth-callback", async function (req, res) {
     const code = req.query.code;
     console.log({ code });
 
-    const response = await fetch(
-      `https://api.instagram.com/oauth/access_token`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+    // const response = await fetch(
+    //   `https://api.instagram.com/oauth/access_token`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //     },
 
-        body: new URLSearchParams({
-          client_id: APP_ID,
-          client_secret: APP_SECRET,
-          grant_type: "authorization_code",
-          redirect_uri: `${BASE_URL}/auth-callback`,
-          code,
-        }),
-      }
-    );
+    //     body: new URLSearchParams({
+    //       client_id: APP_ID,
+    //       client_secret: APP_SECRET,
+    //       grant_type: "authorization_code",
+    //       redirect_uri: `${BASE_URL}/auth-callback`,
+    //       code,
+    //     }),
+    //   }
+    // );
 
-    console.log({ response });
+    // console.log({ response });
 
-    return res.send(response);
+    const data = qs.stringify({
+      client_id: "223946259993081",
+      client_secret: "be6659ef82a77b726e236f30c2facaec",
+      grant_type: "authorization_code",
+      redirect_uri: "https://insta-0u51.onrender.com/auth-callback",
+      code,
+    });
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: "https://api.instagram.com/oauth/access_token",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      data: data,
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    return res.send(200);
   } catch (e) {
     console.log({ e });
     return res
