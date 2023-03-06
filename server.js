@@ -36,13 +36,19 @@ app.get("/auth-callback", async function (req, res) {
       `https://api.instagram.com/oauth/access_token`,
       {
         method: "POST",
-        body: {
-          client_id: APP_ID,
-          client_secret: APP_SECRET,
-          grant_type: "authorization_code",
-          redirect_uri: `${BASE_URL}/auth-callback`,
-          code,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
         },
+
+        body: new URLSearchParams(
+          JSON.stringify({
+            client_id: APP_ID,
+            client_secret: APP_SECRET,
+            grant_type: "authorization_code",
+            redirect_uri: `${BASE_URL}/auth-callback`,
+            code,
+          })
+        ),
       }
     );
 
@@ -80,15 +86,18 @@ app.post("/auth/access-token", async function (req, res) {
   return res.send({ status: 200 }).end();
 });
 
-// app.get("/user", async function (req, res) {
-//   const userId = req.params.id;
+app.get("/user", async function (req, res) {
+  const userId = 17841458655797337;
+  const access_token =
+    "IGQVJXSFM5WFkweWFaS1pkejQ4c2hzcmFQOGVUcTQydUtSa1ZAFeFI4SHc4TlF5bzZAFeHBwWTRyQzV6WGY1Yl9CU25MRVgyb3ZA6M0UyaldmRlB5ZA2d0dlItX2cxZAzItZAlhOV3AzbU9YcF9jWG0yekJHdzVFRkNDS3pCeG93";
+  const response = await fetch(
+    `https://graph.instagram.com/${userId}?fields=id,username&access_token=${
+      access - token
+    }`
+  );
 
-//   const response = await fetch(
-//     `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
-//   );
-
-//   return res.send({ response });
-// });
+  return res.send({ response });
+});
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
