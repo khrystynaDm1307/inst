@@ -43,6 +43,7 @@ app.get("/auth-callback", async function (req, res) {
 
     return res.send(response.json());
   } catch (e) {
+    console.log({ e });
     return res
       .status(e.code || 500)
       .json(e.message)
@@ -50,6 +51,27 @@ app.get("/auth-callback", async function (req, res) {
   }
 });
 
+app.get("/auth/access-token", async function (req, res) {
+  console.log("get access token")
+  // const userId = req.params.id;
+
+  // const response = await fetch(
+  //   `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
+  // );
+
+  return res.send({ status: 200 }).end();
+});
+
+app.post("/auth/access-token", async function (req, res) {
+  console.log("post access token")
+  // const userId = req.params.id;
+
+  // const response = await fetch(
+  //   `https://graph.instagram.com/${userId}?fields=id,username&access_token={access-token}`
+  // );
+
+  return res.send({ status: 200 }).end();
+});
 
 // app.get("/user", async function (req, res) {
 //   const userId = req.params.id;
