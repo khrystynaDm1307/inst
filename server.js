@@ -33,15 +33,22 @@ app.get("/auth-callback", async function (req, res) {
     console.log({ code });
 
     const response = await fetch(
-      `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}&client_secret=${APP_SECRET}&grant_type=authorization_code&redirect_uri=${BASE_URL}/auth/access-token&code=${code}`,
+      `https://api.instagram.com/oauth/access_token`,
       {
         method: "POST",
+        body: {
+          client_id: APP_ID,
+          client_secret: APP_SECRET,
+          grant_type: "authorization_code",
+          redirect_uri: `${BASE_URL}/auth-callback`,
+          code,
+        },
       }
     );
 
     console.log({ response });
 
-    return res.send(response.json());
+    return res.send(response);
   } catch (e) {
     console.log({ e });
     return res
@@ -52,7 +59,7 @@ app.get("/auth-callback", async function (req, res) {
 });
 
 app.get("/auth/access-token", async function (req, res) {
-  console.log("get access token")
+  console.log("get access token");
   // const userId = req.params.id;
 
   // const response = await fetch(
@@ -63,7 +70,7 @@ app.get("/auth/access-token", async function (req, res) {
 });
 
 app.post("/auth/access-token", async function (req, res) {
-  console.log("post access token")
+  console.log("post access token");
   // const userId = req.params.id;
 
   // const response = await fetch(
