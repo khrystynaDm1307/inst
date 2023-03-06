@@ -14,7 +14,7 @@ app.get("/login", function (req, res) {
   console.log("/login");
   return res.redirect(`https://api.instagram.com/oauth/authorize
   ?client_id=${APP_ID}
-  &redirect_uri=${BASE_URL}/auth-callback
+  &redirect_uri=https://insta-0u51.onrender.com/auth-callback
   &scope=user_profile,user_media
   &response_type=code`);
 });
@@ -27,7 +27,7 @@ app.post("/auth-callback", async function (req, res) {
     `https://api.instagram.com/oauth/access_token?client_id=${APP_ID}
     &client_secret=${APP_SECRET}
     &grant_type=authorization_code
-    &redirect_uri=${BASE_URL}/auth/access-token
+    &redirect_uri=https://insta-0u51.onrender.com/auth/access-token
     &code=${code}`,
     {
       method: "POST",
@@ -42,7 +42,10 @@ app.post("/auth-callback", async function (req, res) {
   return res.send({ response });
 });
 
-
+app.post("/auth/access-token", async function (req, res) {
+  console.log("/access token");
+  return res.status(200).end();
+});
 
 app.get("/user", async function (req, res) {
   //   const access_token=req.headers
