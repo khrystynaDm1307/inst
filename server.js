@@ -94,14 +94,14 @@ app.get("/auth-callback", async function (req, res) {
   }
 });
 
-app.get("/user", async function (req, res) {
+// app.get("/user", async function (req, res) {
 
-  const response = await fetch(
-    `https://graph.instagram.com/${user_id}?fields=id,username&access_token=${access_token}`
-  );
+//   const response = await fetch(
+//     `https://graph.instagram.com/${user_id}?fields=id,username&access_token=${access_token}`
+//   );
 
-  return res.send({ response });
-});
+//   return res.send({ response });
+// });
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
