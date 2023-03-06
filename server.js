@@ -83,7 +83,10 @@ app.get("/auth-callback", async function (req, res) {
 
     const response = await axios(config);
     console.log({ response });
-    
+
+    req.access_token = response.data.access_token;
+    req.user_id = response.data.user_id;
+
     return res.send(JSON.stringify(response.data));
   } catch (e) {
     console.log({ e });
@@ -95,13 +98,10 @@ app.get("/auth-callback", async function (req, res) {
 });
 
 app.get("/user", async function (req, res) {
-  const userId = 17841458655797337;
-  const access_token =
-    "IGQVJXSFM5WFkweWFaS1pkejQ4c2hzcmFQOGVUcTQydUtSa1ZAFeFI4SHc4TlF5bzZAFeHBwWTRyQzV6WGY1Yl9CU25MRVgyb3ZA6M0UyaldmRlB5ZA2d0dlItX2cxZAzItZAlhOV3AzbU9YcF9jWG0yekJHdzVFRkNDS3pCeG93";
+  const { access_token, user_id } = req;
+
   const response = await fetch(
-    `https://graph.instagram.com/${userId}?fields=id,username&access_token=${
-      access - token
-    }`
+    `https://graph.instagram.com/${user_id}?fields=id,username&access_token=${access_token}`
   );
 
   return res.send({ response });
