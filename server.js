@@ -3,14 +3,15 @@ const app = express();
 const port = 4000;
 const APP_ID = "880663813213909";
 const APP_SECRET = "5f28610fc885c6856863db5471b0cf55";
-const BASE_URL = "https://insta-test-2.dev-test.pro";
+const BASE_URL = "https://insta-0u51.onrender.com";
 
 app.get("/", function (req, res) {
-  console.log(222222222);
+  console.log("start point");
   res.sendFile("index.html", { root: __dirname });
 });
 
 app.get("/login", function (req, res) {
+  console.log("/login");
   return res.redirect(`https://api.instagram.com/oauth/authorize
   ?client_id=${APP_ID}
   &redirect_uri=${BASE_URL}/auth-callback
@@ -19,6 +20,7 @@ app.get("/login", function (req, res) {
 });
 
 app.post("/auth-callback", async function (req, res) {
+  console.log("/auth callback");
   const code = req.query.code;
 
   const response = await fetch(
@@ -39,6 +41,8 @@ app.post("/auth-callback", async function (req, res) {
   //   }
   return res.send({ response });
 });
+
+
 
 app.get("/user", async function (req, res) {
   //   const access_token=req.headers
