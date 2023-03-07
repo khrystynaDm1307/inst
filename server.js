@@ -4,12 +4,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 import qs from "qs";
 import axios from "axios";
-
+import cors from 'cors';
 const port = 4000;
 const APP_ID = "223946259993081";
 const APP_SECRET = "be6659ef82a77b726e236f30c2facaec";
 const BASE_URL = "https://insta-0u51.onrender.com";
-
+// const CLIENT_URL="http://localhost:3000"
+const CLIENT_URL="https://inst-fromt.onrender.com/"
 const scope = [
   "pages_read_engagement",
   "instagram_basic",
@@ -38,12 +39,13 @@ const scope = [
   "user_posts",
 ];
 const app = express();
+app.use(cors({ credentials: true, origin: CLIENT_URL }));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.get("/", function (req, res) {
-  console.log("start point");
+  console.log(req.headers);
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
@@ -94,14 +96,7 @@ app.get("/auth-callback", async function (req, res) {
   }
 });
 
-// app.get("/user", async function (req, res) {
 
-//   const response = await fetch(
-//     `https://graph.instagram.com/${user_id}?fields=id,username&access_token=${access_token}`
-//   );
-
-//   return res.send({ response });
-// });
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
