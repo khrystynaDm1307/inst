@@ -58,9 +58,19 @@
         });
 
         FB.api(`/me/accounts`, function (response) {
-          console.log("User info: " + response);
+          console.log("User info: " + JSON.stringify(response, null, 2));
 
           document.getElementById("profile").innerHTML = JSON.stringify(
+            response,
+            null,
+            2
+          );
+        });
+
+        FB.api(`/me/accounts`, function (response) {
+          console.log("User info 2: " + JSON.stringify(response, null, 2));
+
+          document.getElementById("user").innerHTML = JSON.stringify(
             response,
             null,
             2
@@ -73,7 +83,10 @@
           function (response) {
             checkLoginState();
           },
-          { scope: "public_profile,email,instagram_basic,pages_show_list" }
+          {
+            scope:
+              "public_profile,email,instagram_basic,pages_show_list,pages_read_engagement",
+          }
         );
       }
     </script>
@@ -84,7 +97,10 @@
     </fb:login-button> -->
     <button onclick="login()">FB login</button>
     <div id="status"></div>
+    <hr />
     <div id="profile"></div>
+    <hr />
+    <div id="user"></div>
     <a href="/login">Insta login</a>
     <!-- Load the JS SDK asynchronously -->
     <script
