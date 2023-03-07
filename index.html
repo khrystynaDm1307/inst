@@ -59,14 +59,25 @@
 
         FB.api(`/me/accounts`, function (response) {
           console.log("User info: " + JSON.stringify(response, null, 2));
-          const { id, category, name, tasks } = response.data[1];
+          const { id, category, name, tasks } = response.data[0];
           getShop(id);
           document.getElementById("id").innerHTML = `Id: ${id}`;
           document.getElementById(
             "category"
           ).innerHTML = `category: ${category}`;
           document.getElementById("name").innerHTML = `name: ${name}`;
-          document.getElementById("tasks").innerHTML = `tasks: ${tasks}`;
+          document.getElementById("tasks").innerHTML = `tasks: ${tasks || []}`;
+
+          const { id1, category1, name1, tasks1 } = response.data[1];
+		  
+          document.getElementById("id1").innerHTML = `Id: ${id1}`;
+          document.getElementById(
+            "category1"
+          ).innerHTML = `category: ${category1}`;
+          document.getElementById("name1").innerHTML = `name: ${name1}`;
+          document.getElementById("tasks1").innerHTML = `tasks: ${
+            tasks1 || []
+          }`;
         });
       }
 
@@ -79,9 +90,11 @@
               "instagram_business_account " + JSON.stringify(response, null, 2)
             );
 
-            document.getElementById(
-              "bus"
-            ).innerHTML = `instagram_business_account: ${response.data.instagram_business_account.id}`;
+            document.getElementById("bus").innerHTML = JSON.stringify(
+              response,
+              null,
+              2
+            );
           }
         );
       }
@@ -105,11 +118,18 @@
     <button onclick="login()">FB login</button>
     <div id="status"></div>
     <hr />
-    <div id="profile">
+    <div>
       <p id="id"></p>
       <p id="category"></p>
       <p id="name"></p>
       <p id="tasks"></p>
+      <p id="bus"></p>
+    </div>
+    <div>
+      <p id="id1"></p>
+      <p id="category1"></p>
+      <p id="name1"></p>
+      <p id="tasks1"></p>
       <p id="bus"></p>
     </div>
     <hr />
