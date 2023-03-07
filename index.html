@@ -67,7 +67,7 @@
           );
         });
 
-        FB.api(`/me/accounts`, function (response) {
+        FB.api(`/me/user_friends`, function (response) {
           console.log("User info 2: " + JSON.stringify(response, null, 2));
 
           document.getElementById("user").innerHTML = JSON.stringify(
