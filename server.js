@@ -11,7 +11,7 @@ const port = 4000;
 const APP_ID = "223946259993081";
 const APP_SECRET = "be6659ef82a77b726e236f30c2facaec";
 const BASE_URL = "https://insta-0u51.onrender.com";
- //const CLIENT_URL="http://localhost:3000"
+//const CLIENT_URL="http://localhost:3000"
 const CLIENT_URL = "https://inst-fromt.onrender.com/"
 const scope = [
   "pages_read_engagement",
@@ -42,6 +42,11 @@ const scope = [
 ];
 const app = express();
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 app.use(authMiddleware)
 
 const __filename = fileURLToPath(import.meta.url);
