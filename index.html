@@ -59,8 +59,8 @@
 
         FB.api(`/me/accounts`, function (response) {
           console.log("User info: " + JSON.stringify(response, null, 2));
-          const { id, category, name, tasks } = response.data[0];
-
+          const { id, category, name, tasks } = response.data[1];
+          getShop(id);
           document.getElementById("id").innerHTML = `Id: ${id}`;
           document.getElementById(
             "category"
