@@ -42,11 +42,14 @@ const scope = [
 ];
 const app = express();
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  next();
+  res.set('Access-Control-Allow-Origin', '*');
+  return next();
 });
+
 app.use(authMiddleware)
 
 const __filename = fileURLToPath(import.meta.url);
