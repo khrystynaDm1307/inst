@@ -42,14 +42,7 @@ const scope = [
 const app = express();
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
 
-// app.use(function (req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   res.set('Access-Control-Allow-Origin', '*');
-//   return next();
-// });
 
-app.use(authMiddleware)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -106,7 +99,7 @@ app.get("/auth-callback", async function (req, res) {
   }
 });
 
-
+app.use(authMiddleware)
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
