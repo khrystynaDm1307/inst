@@ -60,6 +60,7 @@
         FB.api(`/me/accounts`, function (response) {
           console.log("User info: " + JSON.stringify(response, null, 2));
           const { id, category, name, tasks } = response.data[0];
+
           document.getElementById("id").innerHTML = `Id: ${id}`;
           document.getElementById(
             "category"
@@ -67,18 +68,23 @@
           document.getElementById("name").innerHTML = `name: ${name}`;
           document.getElementById("tasks").innerHTML = `tasks: ${tasks}`;
         });
-
-        // FB.api(`/me/user_friends`, function (response) {
-        //   console.log("User info 2: " + JSON.stringify(response, null, 2));
-
-        //   document.getElementById("user").innerHTML = JSON.stringify(
-        //     response,
-        //     null,
-        //     2
-        //   );
-        // });
       }
 
+      function getShop(id) {
+        FB.api(
+          `/${id}`,
+          { fields: "instagram_business_account" },
+          function (response) {
+            console.log(
+              "instagram_business_account " + JSON.stringify(response, null, 2)
+            );
+
+            document.getElementById(
+              "bus"
+            ).innerHTML = `instagram_business_account: ${response.data.instagram_business_account.id}`;
+          }
+        );
+      }
       function login() {
         FB.login(
           function (response) {
@@ -104,6 +110,7 @@
       <p id="category"></p>
       <p id="name"></p>
       <p id="tasks"></p>
+      <p id="bus"></p>
     </div>
     <hr />
     <div id="user"></div>
