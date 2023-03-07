@@ -48,11 +48,20 @@
       function testAPI() {
         // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
         console.log("Welcome!  Fetching your information.... ");
+        let userInfo;
         FB.api("/me", function (response) {
           console.log("Successful login for: " + response.name);
           console.log({ response });
+          userInfo = response;
           document.getElementById("status").innerHTML =
             "Thanks for logging in, " + response.name + "!";
+        });
+
+        FB.api(`/${userInfo.user_id}`, function (response) {
+          console.log("User info: " + response);
+
+          document.getElementById("profile").innerHTML =
+            JSON.stringify(response);
         });
       }
 
@@ -61,7 +70,7 @@
           function (response) {
             checkLoginState();
           },
-          { scope: "public_profile,email" }
+          { scope: "public_profile,email,instagram_basic" }
         );
       }
     </script>
@@ -72,7 +81,7 @@
     </fb:login-button>
     <button onclick="login()">FB login</button>
     <div id="status"></div>
-
+    <div id="profile"></div>
     <a href="/login">Insta login</a>
     <!-- Load the JS SDK asynchronously -->
     <script
