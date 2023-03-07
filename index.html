@@ -60,8 +60,11 @@
         FB.api(`/me/accounts`, function (response) {
           console.log("User info: " + response);
 
-          document.getElementById("profile").innerHTML =
-            JSON.stringify(response);
+          document.getElementById("profile").innerHTML = JSON.stringify(
+            response,
+            null,
+            2
+          );
         });
       }
 
@@ -77,8 +80,8 @@
 
     <!-- The JS SDK Login Button -->
 
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-    </fb:login-button>
+    <!-- <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    </fb:login-button> -->
     <button onclick="login()">FB login</button>
     <div id="status"></div>
     <div id="profile"></div>
