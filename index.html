@@ -70,10 +70,7 @@
           function (response) {
             checkLoginState();
           },
-          {
-            scope:
-              "pages_read_engagement,instagram_basic,instagram_manage_insights,business_management,user_profile,user_media,instagram_content_publish,pages_show_list,email,read_insights,publish_video,user_hometown,user_birthday,user_age_range,user_link,user_location,user_likes,public_profile,pages_user_locale,pages_user_timezone,instagram_shopping_tag_products,user_videos,pages_manage_posts,pages_manage_engagement,user_posts",
-          }
+          { scope: "public_profile,email,instagram_basic,pages_show_list" }
         );
       }
     </script>
