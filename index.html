@@ -114,6 +114,10 @@
           }
         );
       }
+
+	  function logout(){
+		FB.logout()
+	  }
     </script>
 
     <!-- The JS SDK Login Button -->
@@ -121,6 +125,7 @@
     <!-- <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
     </fb:login-button> -->
     <button onclick="login()">FB login</button>
+	<button onclick="logout()">FB logout</button>
     <div id="status"></div>
     <hr />
     <div>
