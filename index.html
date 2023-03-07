@@ -68,8 +68,13 @@
           document.getElementById("name").innerHTML = `name: ${name}`;
           document.getElementById("tasks").innerHTML = `tasks: ${tasks || []}`;
 
-          const { id1, category1, name1, tasks1 } = response.data[1];
-		  
+          const {
+            id: id1,
+            category: category1,
+            name: name1,
+            tasks: tasks1,
+          } = response.data[1];
+
           document.getElementById("id1").innerHTML = `Id: ${id1}`;
           document.getElementById(
             "category1"
