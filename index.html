@@ -28,9 +28,37 @@
         });
       }
 
+      const scope = [
+        "pages_read_engagement",
+        "instagram_basic",
+        "instagram_manage_insights",
+        "business_management",
+        "user_profile",
+        "user_media",
+        "instagram_content_publish",
+        "pages_show_list",
+        "email",
+        "read_insights",
+        "publish_video",
+        "user_hometown",
+        "user_birthday",
+        "user_age_range",
+        "user_link",
+        "user_location",
+        "user_likes",
+        "public_profile",
+        "pages_user_locale",
+        "pages_user_timezone",
+        "instagram_shopping_tag_products",
+        "user_videos",
+        "pages_manage_posts",
+        "pages_manage_engagement",
+        "user_posts",
+      ];
+
       window.fbAsyncInit = function () {
         FB.init({
-          appId: "223946259993081",
+          appId: "504487225008901",
           cookie: true, // Enable cookies to allow the server to access the session.
           xfbml: true, // Parse social plugins on this webpage.
           version: "v16.0", // Use this Graph API version for this call.
@@ -55,7 +83,10 @@
 
     <!-- The JS SDK Login Button -->
 
-    <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+    <fb:login-button
+      scope="public_profile,email,instagram_basic,pages_show_list"
+      onlogin="checkLoginState();"
+    >
     </fb:login-button>
 
     <div id="status"></div>
