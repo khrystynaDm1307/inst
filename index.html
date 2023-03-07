@@ -55,13 +55,22 @@
             "Thanks for logging in, " + response.name + "!";
         });
       }
+
+      function login() {
+        FB.login(
+          function (response) {
+            checkLoginState();
+          },
+          { scope: "public_profile,email" }
+        );
+      }
     </script>
 
     <!-- The JS SDK Login Button -->
 
     <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
     </fb:login-button>
-
+    <button onclick="login()">FB login</button>
     <div id="status"></div>
 
     <a href="/login">Insta login</a>
