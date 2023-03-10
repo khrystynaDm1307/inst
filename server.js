@@ -14,16 +14,17 @@ app.use(cors({ credentials: true, origin: CLIENT_URL }));
 
 app.post("/webhooks", async function (req, res) {
   console.log("post webkook")
+  console.log(req.body)
   res.send(200).end()
 })
 
 app.get("/webhooks", async function (req, res) {
-  console.log("get webkook")
   console.log(req.query)
+
   if (req.query['hub.verify_token'] === WEBHOOK_SECRET) {
-    console.log(33333)
     return res.status(201).send((req.query['hub.challenge'])).end()
   }
+
   return res.sendStatus(200).end()
 })
 
