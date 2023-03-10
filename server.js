@@ -11,6 +11,17 @@ const CLIENT_URL = "https://inst-fromt.onrender.com"
 const app = express();
 
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
+
+app.post("/webhooks", async function (req, res) {
+  console.log("post webkook", { req })
+  res.send(200).end()
+})
+
+app.get("/webhooks", async function (req, res) {
+  console.log("get webkook", { req })
+  res.send(200).end()
+})
+
 app.use(authMiddleware);
 
 app.get("/", async function (req, res) {
@@ -294,15 +305,7 @@ app.get("/media/:id/insights", async function (req, res) {
   }
 });
 
-app.post("/webhooks", async function (req, res) {
-  console.log("post webkook", {req})
-  res.send(200).end()
-})
 
-app.get("/webhooks", async function (req, res) {
-  console.log("get webkook", {req})
-  res.send(200).end()
-})
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
