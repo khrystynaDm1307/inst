@@ -7,19 +7,22 @@ const port = 4000;
 const BASE_URL = "https://insta-0u51.onrender.com";
 //const CLIENT_URL = "http://localhost:3000";
 const CLIENT_URL = "https://inst-fromt.onrender.com"
-
+const WEBHOOK_SECRET = "verify"
 const app = express();
 
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
 
 app.post("/webhooks", async function (req, res) {
-  console.log("post webkook", { req })
+  console.log("post webkook")
   res.send(200).end()
 })
 
 app.get("/webhooks", async function (req, res) {
-  console.log("get webkook", { req })
-  res.send(200).end()
+  console.log("get webkook")
+  if (req.query['hub.verify-token'] === WEBHOOK_SECRET) {
+    return res.send(req.query['hub.challenge']).end()
+  }
+  return res.send(200).end()
 })
 
 app.use(authMiddleware);
