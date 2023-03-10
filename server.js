@@ -20,9 +20,9 @@ app.post("/webhooks", async function (req, res) {
 app.get("/webhooks", async function (req, res) {
   console.log("get webkook")
   if (req.query['hub.verify-token'] === WEBHOOK_SECRET) {
-    return res.send(req.query['hub.challenge']).end()
+    return res.status(201).json(req.query['hub.challenge']).end()
   }
-  return res.send(200).end()
+  return res.sendStatus(200).end()
 })
 
 app.use(authMiddleware);
