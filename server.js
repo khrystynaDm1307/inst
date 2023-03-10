@@ -19,8 +19,8 @@ app.post("/webhooks", async function (req, res) {
 
 app.get("/webhooks", async function (req, res) {
   console.log("get webkook")
-
-  if (req.query['hub.verify-token'] === WEBHOOK_SECRET) {
+  console.log(req.query)
+  if (req.query['hub.verify_token'] === WEBHOOK_SECRET) {
     console.log(33333)
     return res.status(201).send((req.query['hub.challenge'])).end()
   }
