@@ -45,7 +45,8 @@ app.get("/account/:id", async function (req, res) {
     "profile_picture_url",
     "website",
     "username",
-
+    "id",
+    "name",
   ].join(",");
 
   try {
@@ -82,6 +83,15 @@ app.get("/ig-accounts/:id/media", async function (req, res) {
     "media_product_type",
     "media_type",
     "media_url",
+    "id",
+    "is_comment_enabled",
+    "is_shared_to_feed",
+    "permalink",
+    "owner",
+    "shortcode",
+    "thumbnail_url",
+    "timestamp",
+    "username"
   ].join(",");
 
   try {
@@ -89,6 +99,41 @@ app.get("/ig-accounts/:id/media", async function (req, res) {
     if (!id) throw new Error("Bad request");
 
     const response = await api.get(`${id}/media`, {
+      params: { access_token, fields },
+    });
+
+    return res.status(201).json(response.data).end();
+  } catch (e) {
+    console.log("----->" + JSON.stringify(e, null, 2));
+    return res.status(e.status || 500).end();
+  }
+});
+
+app.get("/ig-accounts/:id/stories", async function (req, res) {
+  const access_token = req.access_token;
+
+  const fields = [
+    "caption",
+    "comments_count",
+    "like_count",
+    "media_product_type",
+    "media_type",
+    "media_url",
+    "id",
+    "is_shared_to_feed",
+    "permalink",
+    "owner",
+    "shortcode",
+    "thumbnail_url",
+    "timestamp",
+    "username"
+  ].join(",");
+
+  try {
+    const { id } = req.params;
+    if (!id) throw new Error("Bad request");
+
+    const response = await api.get(`${id}/stories`, {
       params: { access_token, fields },
     });
 
@@ -133,23 +178,28 @@ app.get("/media/:id", async function (req, res) {
   }
 });
 
-app.get("/media/:id/insights", async function (req, res) {
+app.get("/stories/:id", async function (req, res) {
   const access_token = req.access_token;
 
-  const metric = [
-    "carousel_album_engagement",
-    "carousel_album_impressions",
-    "carousel_album_reach",
-    "carousel_album_saved",
-    "carousel_album_video_views",
+  const fields = [
+    "caption",
+    "like_count",
+    "media_product_type",
+    "media_type",
+    "media_url",
+    "is_shared_to_feed",
+    "owner",
+    "permalink",
+    "timestamp",
+    "username",
   ].join(",");
 
   try {
     const { id } = req.params;
     if (!id) throw new Error("Bad request");
 
-    const response = await api.get(`${id}/insights`, {
-      params: { access_token, metric },
+    const response = await api.get(`${id}`, {
+      params: { access_token, fields },
     });
 
     return res.status(201).json(response.data).end();
@@ -158,6 +208,101 @@ app.get("/media/:id/insights", async function (req, res) {
     return res.status(e.status || 500).end();
   }
 });
+
+app.get("/media/:id/insights", async function (req, res) {
+  const access_token = req.access_token;
+
+  const metric_carousel = [
+    "carousel_album_engagement",
+    "carousel_album_impressions",
+    "carousel_album_reach",
+    "carousel_album_saved",
+    "carousel_album_video_views",
+  ].join(",");
+
+  const metric_photo_video = [
+    "engagement",
+    "impressions",
+    "reach",
+    "saved",
+    "video_views",
+  ].join(",");
+
+  const metric_reels = [
+    "comments",
+    "likes",
+    "plays",
+    "reach",
+    "saved",
+    "shares",
+    "total_interactions"
+  ].join(",");
+
+  const metric_stories = [
+    "exits",
+    "impressions",
+    "reach",
+    "replies",
+    "taps_forward",
+    "taps_back",
+  ].join(",");
+
+  const metric_post = [
+    "comments",
+    "follows",
+    "likes",
+    "profile_activity",
+    "profile_visits",
+    "shares",
+    "total_interactions"
+  ].join(",")
+
+  const metric_story = [
+    "follows",
+    "navigation",
+    "profile_activity",
+    "profile_visits",
+    "shares",
+    "total_interactions"
+  ].join(",")
+
+  try {
+    const { id } = req.params;
+    if (!id) throw new Error("Bad request");
+
+    const media = await api.get(`${id}`, {
+      params: { access_token, fields: "media_type,media_product_type" },
+    });
+
+    console.log(media.data)
+    const { media_product_type, media_type } = media.data;
+    let metrics;
+
+    if (media_type === 'CAROUSEL_ALBUM') metrics = metric_carousel;
+    if (media_product_type === 'STORY') metrics = metric_stories + "," + metric_story;
+    if (media_product_type === 'REELS') metrics = metric_reels;
+    if (media_type !== 'CAROUSEL_ALBUM' && media_product_type === "FEED") metrics = metric_post + "," + metric_photo_video;
+
+    const response = await api.get(`${id}/insights`, {
+      params: { access_token, metric: metrics },
+    });
+
+    return res.status(201).json(response.data).end();
+  } catch (e) {
+    console.log("----->" + JSON.stringify(e, null, 2));
+    return res.status(e.status || 500).end();
+  }
+});
+
+app.post("/webhooks", async function (req, res) {
+  console.log("post webkook", {req})
+  res.send(200).end()
+})
+
+app.get("/webhooks", async function (req, res) {
+  console.log("get webkook", {req})
+  res.send(200).end()
+})
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
