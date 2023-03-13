@@ -5,28 +5,41 @@ import { api } from "./http.js";
 
 const port = 4000;
 const BASE_URL = "https://insta-0u51.onrender.com";
-//const CLIENT_URL = "http://localhost:3000";
-const CLIENT_URL = "https://inst-fromt.onrender.com"
-const WEBHOOK_SECRET = "verify"
+const CLIENT_URL = "http://localhost:3000";
+//const CLIENT_URL = "https://inst-fromt.onrender.com"
+const WEBHOOK_SECRET = "verify";
 const app = express();
 
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
 
+// to receive story insights 1 hour after expiring
 app.post("/webhooks", async function (req, res) {
-  console.log("post webkook")
-  console.log(req.body)
-  res.send(200).end()
-})
+  console.log("post webkook");
+  console.log(req.body);
+  // {
+  //   "field": "story_insights",
+  //   "value": {
+  //     "media_id": "17887498072083520",
+  //     "impressions": 444,
+  //     "reach": 44,
+  //     "taps_forward": 4,
+  //     "taps_back": 3,
+  //     "exits": 3,
+  //     "replies": 0
+  //   }
+  // }
+  res.send(200).end();
+});
 
 app.get("/webhooks", async function (req, res) {
-  console.log(req.query)
+  console.log(req.query);
 
-  if (req.query['hub.verify_token'] === WEBHOOK_SECRET) {
-    return res.status(201).send((req.query['hub.challenge'])).end()
+  if (req.query["hub.verify_token"] === WEBHOOK_SECRET) {
+    return res.status(201).send(req.query["hub.challenge"]).end();
   }
 
-  return res.sendStatus(200).end()
-})
+  return res.sendStatus(200).end();
+});
 
 app.use(authMiddleware);
 
@@ -108,7 +121,7 @@ app.get("/ig-accounts/:id/media", async function (req, res) {
     "shortcode",
     "thumbnail_url",
     "timestamp",
-    "username"
+    "username",
   ].join(",");
 
   try {
@@ -143,7 +156,7 @@ app.get("/ig-accounts/:id/stories", async function (req, res) {
     "shortcode",
     "thumbnail_url",
     "timestamp",
-    "username"
+    "username",
   ].join(",");
 
   try {
@@ -177,7 +190,8 @@ app.get("/media/:id", async function (req, res) {
     "permalink",
     "timestamp",
     "username",
-    "comments{username,text,user}"
+    "comments{username,text,user}",
+    "thumbnail_url",
   ].join(",");
 
   try {
@@ -252,7 +266,7 @@ app.get("/media/:id/insights", async function (req, res) {
     "reach",
     "saved",
     "shares",
-    "total_interactions"
+    "total_interactions",
   ].join(",");
 
   const metric_stories = [
@@ -271,8 +285,8 @@ app.get("/media/:id/insights", async function (req, res) {
     "profile_activity",
     "profile_visits",
     "shares",
-    "total_interactions"
-  ].join(",")
+    "total_interactions",
+  ].join(",");
 
   const metric_story = [
     "follows",
@@ -280,8 +294,8 @@ app.get("/media/:id/insights", async function (req, res) {
     "profile_activity",
     "profile_visits",
     "shares",
-    "total_interactions"
-  ].join(",")
+    "total_interactions",
+  ].join(",");
 
   try {
     const { id } = req.params;
@@ -291,14 +305,16 @@ app.get("/media/:id/insights", async function (req, res) {
       params: { access_token, fields: "media_type,media_product_type" },
     });
 
-    console.log(media.data)
+    console.log(media.data);
     const { media_product_type, media_type } = media.data;
     let metrics;
 
-    if (media_type === 'CAROUSEL_ALBUM') metrics = metric_carousel;
-    if (media_product_type === 'STORY') metrics = metric_stories + "," + metric_story;
-    if (media_product_type === 'REELS') metrics = metric_reels;
-    if (media_type !== 'CAROUSEL_ALBUM' && media_product_type === "FEED") metrics = metric_post + "," + metric_photo_video;
+    if (media_type === "CAROUSEL_ALBUM") metrics = metric_carousel;
+    if (media_product_type === "STORY")
+      metrics = metric_stories + "," + metric_story;
+    if (media_product_type === "REELS") metrics = metric_reels;
+    if (media_type !== "CAROUSEL_ALBUM" && media_product_type === "FEED")
+      metrics = metric_post + "," + metric_photo_video;
 
     const response = await api.get(`${id}/insights`, {
       params: { access_token, metric: metrics },
@@ -311,7 +327,133 @@ app.get("/media/:id/insights", async function (req, res) {
   }
 });
 
+// here we use inastagram id to get user insights
+app.get("/ig-accounts/:id/insights", async function (req, res) {
+  const access_token = req.access_token;
 
+  const lifetime_metric = [
+    "audience_city",
+    "audience_country",
+    "audience_gender_age",
+    "audience_locale",
+    "online_followers",
+  ].join(",");
+
+  const day_metric = [
+    "email_contacts",
+    "follower_count",
+    "get_directions_clicks",
+    "impressions",
+    "phone_call_clicks",
+    "profile_views",
+    "reach",
+    "text_message_clicks",
+    "website_clicks",
+  ];
+
+  // can choose since/untill
+  const month_metric = ["impressions", "reach"];
+
+  try {
+    const { id } = req.params;
+    if (!id) throw new Error("Bad request");
+
+    const lifetime_metric_resp = await api.get(`${id}/insights`, {
+      params: { access_token, metric: lifetime_metric, period: "lifetime" },
+    });
+    const day_metric_resp = await api.get(`${id}/insights`, {
+      params: { access_token, metric: day_metric, period: "day" },
+    });
+    const month_metric_resp = await api.get(`${id}/insights`, {
+      params: { access_token, metric: month_metric, period: "days_28" },
+    });
+
+    return res
+      .status(201)
+      .json({
+        lifetime_metric: lifetime_metric_resp?.data?.data,
+        day_metric: day_metric_resp?.data?.data,
+        month_metric: month_metric_resp?.data?.data,
+      })
+      .end();
+  } catch (e) {
+    console.log("----->" + JSON.stringify(e, null, 2));
+    return res.status(e.status || 500).end();
+  }
+});
+
+// here we use inastagram id to get user insights
+app.get("/ig-accounts/:id/new-insights", async function (req, res) {
+  const access_token = req.access_token;
+
+  const day_metric = [
+    "impressions",
+    "reach",
+    "total_interactions",
+    "accounts_engaged",
+    "likes",
+    "comments",
+    // "saved",
+    "shares",
+    "replies",
+    "follows_and_unfollows",
+    "profile_links_taps",
+    "website_clicks",
+    "profile_views",
+  ];
+
+  try {
+    const { id } = req.params;
+    if (!id) throw new Error("Bad request");
+
+    const day_metric_resp = await api.get(`${id}/insights`, {
+      params: {
+        access_token,
+        metric: day_metric,
+        period: "day",
+        metric_type: "total_value",
+      },
+    });
+
+    return res
+      .status(201)
+      .json({
+        day_metric: day_metric_resp?.data?.data,
+      })
+      .end();
+  } catch (e) {
+    console.log("----->" + JSON.stringify(e, null, 2));
+    return res.status(e.status || 500).end();
+  }
+});
+
+// here we use inastagram id to get user insights
+app.get("/ig-accounts/:id/demo-insights", async function (req, res) {
+  const access_token = req.access_token;
+  const { breakdown, metric  } = req.query;
+
+  try {
+    const { id } = req.params;
+    if (!id || !breakdown || !metric) throw new Error("Bad request");
+    console.log({ metric, breakdown });
+
+    const demo_metric_resp = await api.get(`${id}/insights`, {
+      params: {
+        access_token,
+        metric,
+        period: "lifetime",
+        metric_type: "total_value",
+        timeframe: "last_90_days",
+        breakdown,
+      },
+    });
+
+    return res.status(201).json(demo_metric_resp?.data?.data).end();
+  } catch (e) {
+    console.log("----->" + JSON.stringify(e, null, 2));
+    return res.status(e.status || 500).end();
+  }
+});
 
 app.listen(port, () => {
   console.log(`app listening on port ${port}`);
