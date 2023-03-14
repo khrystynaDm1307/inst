@@ -5,8 +5,8 @@ import { api } from "./http.js";
 
 const port = 4000;
 const BASE_URL = "https://insta-0u51.onrender.com";
-const CLIENT_URL = "http://localhost:3000";
-//const CLIENT_URL = "https://inst-fromt.onrender.com"
+//const CLIENT_URL = "http://localhost:3000";
+const CLIENT_URL = "https://inst-fromt.onrender.com"
 const WEBHOOK_SECRET = "verify";
 const app = express();
 
@@ -430,7 +430,7 @@ app.get("/ig-accounts/:id/new-insights", async function (req, res) {
 // here we use inastagram id to get user insights
 app.get("/ig-accounts/:id/demo-insights", async function (req, res) {
   const access_token = req.access_token;
-  const { breakdown, metric  } = req.query;
+  const { breakdown, metric } = req.query;
 
   try {
     const { id } = req.params;
@@ -449,6 +449,37 @@ app.get("/ig-accounts/:id/demo-insights", async function (req, res) {
     });
 
     return res.status(201).json(demo_metric_resp?.data?.data).end();
+  } catch (e) {
+    console.log("----->" + JSON.stringify(e, null, 2));
+    return res.status(e.status || 500).end();
+  }
+});
+
+// here we use inastagram id to get user insights
+app.get("/ig-accounts/:id/tags", async function (req, res) {
+  const access_token = req.access_token;
+
+  const fields = [
+    "caption",
+    "media_product_type",
+    "media_type",
+    "media_url",
+    "permalink",
+    "username",
+  
+  ].join(",");
+
+  try {
+    const { id } = req.params;
+
+    const response = await api.get(`${id}/tags`, {
+      params: {
+        access_token,
+        fields,
+      },
+    });
+
+    return res.status(201).json(response?.data).end();
   } catch (e) {
     console.log("----->" + JSON.stringify(e, null, 2));
     return res.status(e.status || 500).end();
