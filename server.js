@@ -17,7 +17,7 @@ app.use(bodyParser.json())
 // to receive story insights 1 hour after expiring
 app.post("/webhooks", async function (req, res) {
   console.log("post webkook");
-  console.log(req.body);
+  console.log(JSON.stringify(req.body));
   // {
   //   "field": "story_insights",
   //   "value": {
