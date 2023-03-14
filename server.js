@@ -2,16 +2,18 @@ import express from "express";
 import cors from "cors";
 import { authMiddleware } from "./auth-middleware.js";
 import { api } from "./http.js";
+import bodyParser from "body-parser";
 
 const port = 4000;
 const BASE_URL = "https://insta-0u51.onrender.com";
-//const CLIENT_URL = "http://localhost:3000";
-const CLIENT_URL = "https://inst-fromt.onrender.com"
+const CLIENT_URL = "http://localhost:3000";
+//const CLIENT_URL = "https://inst-fromt.onrender.com"
 const WEBHOOK_SECRET = "verify";
 const app = express();
 
 app.use(cors({ credentials: true, origin: CLIENT_URL }));
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json())
 // to receive story insights 1 hour after expiring
 app.post("/webhooks", async function (req, res) {
   console.log("post webkook");
@@ -466,7 +468,6 @@ app.get("/ig-accounts/:id/tags", async function (req, res) {
     "media_url",
     "permalink",
     "username",
-  
   ].join(",");
 
   try {
