@@ -15,36 +15,15 @@ app.use(cors({ credentials: true, origin: CLIENT_URL }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
+app.post("/test1",async (req,res)=>{
+  console.log(req.query)
+  return res.json({}).end()
+})
 
-function generateRandomString(length) {
-  let randomString = '';
-  let allowedChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-  for (let charNumber= 0; charNumber < length; ++charNumber) {
-    randomString += allowedChars.charAt(Math.floor(Math.random() * allowedChars.length));
-  }
-  return randomString;
-}
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
-}
-
-const codeVerifier = generateRandomString(getRandomInt(128));
-
-async function generateCodeChallenge(codeVerifier) {
- let digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(codeVerifier));
-
- return btoa(String.fromCharCode(...new Uint8Array(digest)))
-   .replace(/=/g, '')
-   .replace(/\+/g, '-')
-   .replace(/\//g, '_');
-}
-
-const codeChallenge = await generateCodeChallenge(codeVerifier);
-
-console.log(codeChallenge)
-
+app.get("/test1",async (req,res)=>{
+  console.log(req.query)
+  return res.json({}).end()
+})
 
 // to receive story insights 1 hour after expiring
 app.post("/webhooks", async function (req, res) {
