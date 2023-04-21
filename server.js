@@ -3,7 +3,7 @@ import cors from "cors";
 import { authMiddleware } from "./auth-middleware.js";
 import { api } from "./http.js";
 import bodyParser from "body-parser";
-import crypto from crypto;
+import crypto from "crypto";
 const port = 4000;
 const BASE_URL = "https://insta-0u51.onrender.com";
 const CLIENT_URL = "http://localhost:3000";
