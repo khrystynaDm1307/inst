@@ -20,6 +20,19 @@ app.post("/test1",async (req,res)=>{
   return res.json({}).end()
 })
 
+app.post("/apify",async (req,res)=>{
+  console.log(req.query, 11111111)
+    console.log(req.body)
+  return res.status(200).end()
+})
+
+app.get("/apify",async (req,res)=>{
+  console.log(req.query,222)
+    console.log(req.body)
+  return res.status(200).end()
+})
+
+
 app.get("/test1",async (req,res)=>{
   console.log(req.query)
   return res.json({}).end()
